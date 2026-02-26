@@ -1332,11 +1332,22 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+  // Smooth scroll for all anchor links (works on GitHub Pages)
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         setTimeout(() => entry.target.classList.add('visible'), 80);
         observer.unobserve(entry.target);
@@ -1347,4 +1358,23 @@
 
   // Stagger sibling reveals
   document.querySelectorAll('.subjects-grid, .pricing-grid, .steps').forEach(grid => {
-    [...grid.children].forEach((child, i)
+    [...grid.children].forEach((child, i) => {
+      child.style.transitionDelay = `${i * 0.1}s`;
+    });
+  });
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = '✓ Enquiry Sent!';
+    btn.style.opacity = '0.8';
+    setTimeout(() => {
+      btn.textContent = 'Submit Enquiry →';
+      btn.style.opacity = '1';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
