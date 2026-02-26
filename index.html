@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Process Classroom</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --deep: #0d1f3c;
+    --teal: #00b4a6;
+    --amber: #f5a623;
+    --cream: #f9f4ec;
+    --white: #ffffff;
+    --muted: #8a9bb5;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* --- NOISE TEXTURE OVERLAY --- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
+
+  /* --- NAV --- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 5%;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .logo-top {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .logo-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+  nav ul a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--teal) !important;
+    color: var(--navy) !important;
+    padding: 0.55rem 1.4rem !important;
+    border-radius: 4px;
+    font-weight: 600 !important;
+  }
+  .nav-cta:hover { opacity: 0.9; }
+
+  /* --- HERO --- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 8rem 5% 4rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(0,180,166,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(245,166,35,0.07) 0%, transparent 60%),
+      linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+  }
+
+  /* Floating chemical formula decorations */
+  .formula-float {
+    position: absolute;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: rgba(0,180,166,0.2);
+    pointer-events: none;
+    animation: floatUp 8s ease-in-out infinite;
+  }
+  .formula-float:nth-child(1) { top: 20%; left: 8%; animation-delay: 0s; }
+  .formula-float:nth-child(2) { top: 60%; left: 85%; animation-delay: 2s; font-size: 1rem; }
+  .formula-float:nth-child(3) { top: 75%; left: 15%; animation-delay: 4s; }
+  .formula-float:nth-child(4) { top: 30%; left: 75%; animation-delay: 1s; font-size: 0.7rem; color: rgba(245,166,35,0.2); }
+  .formula-float:nth-child(5) { top: 50%; left: 50%; animation-delay: 3s; }
+
+  @keyframes floatUp {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); opacity: 0.6; }
+    50% { transform: translateY(-20px) rotate(2deg); opacity: 1; }
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 700px;
+    z-index: 2;
+    animation: heroIn 1s ease-out forwards;
+  }
+
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,180,166,0.12);
+    border: 1px solid rgba(0,180,166,0.3);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 1.8rem;
+  }
+  .hero-badge span { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 1.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal);
+    position: relative;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-sub strong { color: var(--cream); font-weight: 500; }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: var(--navy);
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+    border: 2px solid var(--teal);
+  }
+  .btn-primary:hover { background: transparent; color: var(--teal); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    border: 2px solid var(--border);
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.3); }
+
+  /* Hero stats */
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  /* --- SUBJECTS --- */
+  section { padding: 6rem 5%; }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h2.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3.5rem;
+  }
+
+  /* Subject cards */
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .subject-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .subject-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .subject-card:hover::before { transform: scaleX(1); }
+  .subject-card:hover {
+    background: rgba(0,180,166,0.05);
+    border-color: rgba(0,180,166,0.2);
+    transform: translateY(-4px);
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    color: var(--white);
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .card-topics {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .topic-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    background: rgba(0,180,166,0.08);
+    border: 1px solid rgba(0,180,166,0.15);
+    border-radius: 3px;
+    color: var(--teal);
+  }
+
+  /* --- PRICING --- */
+  #pricing {
+    background: var(--deep);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #pricing::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,180,166,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 800px;
+  }
+
+  .pricing-card {
+    border-radius: 16px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    transition: transform 0.3s;
+  }
+  .pricing-card:hover { transform: translateY(-6px); }
+
+  .pricing-card.featured {
+    background: linear-gradient(135deg, rgba(0,180,166,0.12), rgba(0,180,166,0.04));
+    border-color: rgba(0,180,166,0.35);
+  }
+
+  .pricing-card.featured::after {
+    content: 'POPULAR';
+    position: absolute;
+    top: 1.2rem; right: -1.8rem;
+    background: var(--amber);
+    color: var(--navy);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    padding: 0.3rem 2rem;
+    transform: rotate(45deg);
+  }
+
+  .plan-icon { font-size: 2rem; margin-bottom: 1rem; }
+
+  .plan-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .price-currency {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--amber);
+  }
+
+  .price-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .price-period {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .plan-subtitle {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .plan-features li {
+    font-size: 0.9rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .plan-features li::before {
+    content: '→';
+    color: var(--teal);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .plan-cta {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    letter-spacing: 0.03em;
+  }
+
+  .cta-teal {
+    background: var(--teal);
+    color: var(--navy);
+    border: 2px solid var(--teal);
+  }
+  .cta-teal:hover { background: transparent; color: var(--teal); }
+
+  .cta-outline {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--border);
+  }
+  .cta-outline:hover { border-color: rgba(255,255,255,0.3); }
+
+  /* --- HOW IT WORKS --- */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    position: relative;
+  }
+
+  .step {
+    position: relative;
+    padding: 2rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  .step:hover { border-color: rgba(0,180,166,0.2); }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(0,180,166,0.12);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .step-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  .step-desc {
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* --- ABOUT --- */
+  #about {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    position: relative;
+  }
+
+  .about-formula {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(0,180,166,0.4);
+    line-height: 2;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--cream);
+  }
+
+  .float-badge {
+    position: absolute;
+    bottom: -1rem;
+    right: -1rem;
+    background: var(--amber);
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  /* --- CONTACT --- */
+  #contact {
+    background: var(--deep);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  .contact-info p {
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.2rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .contact-item .ci-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .contact-item .ci-label {
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .contact-item .ci-value { color: var(--white); }
+
+  /* Contact Form */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .form-group label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: rgba(0,180,166,0.5);
+  }
+
+  .form-group select option { background: var(--deep); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+
+  .form-submit {
+    background: var(--teal);
+    color: var(--navy);
+    border: none;
+    padding: 1rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 0.03em;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { opacity: 0.85; }
+
+  /* --- FOOTER --- */
+  footer {
+    padding: 2.5rem 5%;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  footer .foot-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  footer .foot-copy {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .foot-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .foot-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.82rem;
+    transition: color 0.2s;
+  }
+  .foot-links a:hover { color: var(--teal); }
+
+  /* Responsive nav */
+  @media (max-width: 640px) {
+    nav ul { display: none; }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <span class="logo-main">Process Classroom</span>
+  </div>
+  <ul>
+    <li><a href="#subjects">Subjects</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About Dr. Meenakshi</a></li>
+    <li><a href="#contact" class="nav-cta">Enroll Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <!-- Floating decorations -->
+  <div class="formula-float">Q = mCₚΔT</div>
+  <div class="formula-float">PV = nRT</div>
+  <div class="formula-float">N = KₐΔc</div>
+  <div class="formula-float">H₂SO₄</div>
+  <div class="formula-float">Re = ρvD/μ</div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span>
+    </div>
+    <h1>
+      Master the<br>
+      <em>Science</em> Behind<br>
+      Every Process
+    </h1>
+    <p class="hero-sub">
+      From <strong>basic chemistry</strong> to advanced <strong>chemical engineering</strong> — personalized learning that transforms how you understand heat, mass, thermodynamics, and materials.
+    </p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">View Pricing Plans</a>
+      <a href="#subjects" class="btn-ghost">Explore Subjects</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">15+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div>
+        <div class="stat-num">🌍</div>
+        <div class="stat-label">Intl. Students</div>
+      </div>
+      <div>
+        <div class="stat-num">Ph.D</div>
+        <div class="stat-label">NIT Durgapur</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBJECTS -->
+<section id="subjects">
+  <p class="section-tag reveal">What We Teach</p>
+  <h2 class="section-title reveal">Core Subjects &amp;<br>Learning Areas</h2>
+  <p class="section-desc reveal">Building your engineering foundation from first principles — every concept explained with clarity and real-world relevance.</p>
+
+  <div class="subjects-grid">
+    <div class="subject-card reveal">
+      <span class="card-icon">🌊</span>
+      <div class="card-title">Mass Transfer</div>
+      <div class="card-desc">Understand diffusion, absorption, distillation and extraction through intuitive conceptual frameworks and rigorous problem-solving.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Diffusion</span>
+        <span class="topic-tag">Distillation</span>
+        <span class="topic-tag">Absorption</span>
+        <span class="topic-tag">Extraction</span>
+      </div>
+    </div>
+
+    <div class="subject-card reveal">
+      <span class="card-icon">♾️</span>
+      <div class="card-title">Engineering Thermodynamics</div>
+      <div class="card-desc">Laws of thermodynamics, equations of state, cycles, and entropy — connecting the abstract to practical chemical process design.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Laws of Thermo</span>
+        <span class="topic-tag">Cycles</span>
+        <span class="topic-tag">EOS</span>
+        <span class="topic-tag">Entropy &amp; Exergy</span>
+      </div>
+    </div>
+
+    <div class="subject-card reveal">
+      <span class="card-icon">🔬</span>
+      <div class="card-title">Material Science</div>
+      <div class="card-desc">Properties, structure, and behavior of engineering materials — metals, polymers, ceramics and composites for real-world applications.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Crystal Structure</span>
+        <span class="topic-tag">Mechanical Properties</span>
+        <span class="topic-tag">Phase Diagrams</span>
+        <span class="topic-tag">Corrosion</span>
+      </div>
+    </div>
+
+    <div class="subject-card reveal">
+      <span class="card-icon">🔥</span>
+      <div class="card-title">Heat Transfer</div>
+      <div class="card-desc">Conduction, convection and radiation demystified — from Fourier's law to designing heat exchangers and solving real thermal problems.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Conduction</span>
+        <span class="topic-tag">Convection</span>
+        <span class="topic-tag">Radiation</span>
+        <span class="topic-tag">Heat Exchangers</span>
+      </div>
+    </div>
+
+    <div class="subject-card reveal">
+      <span class="card-icon">⚗️</span>
+      <div class="card-title">Chemistry &amp; STEM</div>
+      <div class="card-desc">Fundamentals of physical, organic and inorganic chemistry with broad STEM foundations relevant to all engineering disciplines.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Stoichiometry</span>
+        <span class="topic-tag">Reaction Kinetics</span>
+        <span class="topic-tag">Equilibrium</span>
+        <span class="topic-tag">STEM Basics</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <p class="section-tag reveal">Transparent Pricing</p>
+  <h2 class="section-title reveal">Choose Your<br>Learning Format</h2>
+  <p class="section-desc reveal">Two focused modes of learning — intimate one-on-one sessions or collaborative small group batches. Plus research and academic services.</p>
+
+  <div class="pricing-grid" style="max-width:900px;">
+    <!-- Online Batch -->
+    <div class="pricing-card reveal">
+      <div class="plan-icon">👥</div>
+      <div class="plan-name">Online Batch</div>
+      <div class="plan-title">Group Sessions</div>
+      <div class="plan-price">
+        <span class="price-currency">₹</span>
+        <span class="price-amount">1500</span>
+        <span class="price-period">/ hour</span>
+      </div>
+      <div class="plan-subtitle">8 to 10 students per batch</div>
+      <ul class="plan-features">
+        <li>Live online interactive sessions</li>
+        <li>8–10 students for peer learning</li>
+        <li>Structured concept-by-concept curriculum</li>
+        <li>Shared doubt resolution</li>
+        <li>Session recordings available</li>
+        <li>Practice problem sets included</li>
+        <li><strong style="color:var(--teal)">Free Resources Included</strong></li>
+        <li>GATE Preparation coaching</li>
+      </ul>
+      <a href="#contact" class="plan-cta cta-outline">Join a Batch →</a>
+    </div>
+
+    <!-- Personalized -->
+    <div class="pricing-card featured reveal">
+      <div class="plan-icon">🎯</div>
+      <div class="plan-name">Personalized</div>
+      <div class="plan-title">1-on-1 Tuition</div>
+      <div class="plan-price">
+        <span class="price-currency">₹</span>
+        <span class="price-amount">2500</span>
+        <span class="price-period">/ hour</span>
+      </div>
+      <div class="plan-subtitle">Dedicated individual attention</div>
+      <ul class="plan-features">
+        <li>Completely personalized curriculum</li>
+        <li>Flexible scheduling at your convenience</li>
+        <li>In-depth concept building at your pace</li>
+        <li>Direct one-on-one doubt clearing</li>
+        <li>Custom problem sets for your level</li>
+        <li>Exam &amp; assignment-specific prep</li>
+        <li><strong style="color:var(--teal)">Free Resources Included</strong></li>
+        <li>GATE Preparation coaching</li>
+      </ul>
+      <a href="#contact" class="plan-cta cta-teal">Book a Session →</a>
+    </div>
+  </div>
+
+  <!-- Research & Academic Services -->
+  <div style="margin-top:3rem;">
+    <p class="section-tag reveal" style="margin-top:1rem;">Research &amp; Academic Services</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; margin-bottom:0.7rem;">Beyond Tutoring</h3>
+    <p class="reveal" style="color:var(--muted); max-width:560px; line-height:1.7; margin-bottom:2rem;">Specialized services for researchers, postgraduate students, and academics — priced at global rates.</p>
+
+    <div class="subjects-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+      <div class="subject-card">
+        <span class="card-icon">📚</span>
+        <div class="card-title">Free Resources</div>
+        <div class="card-desc">Curated notes, solved problems, formula sheets, and reference materials available to all enrolled students at no extra cost.</div>
+        <div class="card-topics"><span class="topic-tag">Notes</span><span class="topic-tag">Problem Sets</span><span class="topic-tag">Formula Sheets</span></div>
+      </div>
+      <div class="subject-card">
+        <span class="card-icon">🏛️</span>
+        <div class="card-title">GATE Preparation</div>
+        <div class="card-desc">Focused GATE coaching for Chemical Engineering — strategic topic-wise preparation, previous year analysis, and mock practice.</div>
+        <div class="card-topics"><span class="topic-tag">Topic-wise Prep</span><span class="topic-tag">Mock Tests</span><span class="topic-tag">PYQs</span></div>
+      </div>
+      <div class="subject-card">
+        <span class="card-icon">📝</span>
+        <div class="card-title">Thesis Guidance</div>
+        <div class="card-desc">End-to-end thesis support — structure, methodology, literature review, results interpretation, and final review at global academic standards.</div>
+        <div class="card-topics"><span class="topic-tag">Structure</span><span class="topic-tag">Methodology</span><span class="topic-tag">Review</span></div>
+      </div>
+      <div class="subject-card">
+        <span class="card-icon">✍️</span>
+        <div class="card-title">Academic Writing</div>
+        <div class="card-desc">Research papers, journal articles, and technical reports written and edited to international publication standards.</div>
+        <div class="card-topics"><span class="topic-tag">Journal Papers</span><span class="topic-tag">Technical Reports</span><span class="topic-tag">Global Standards</span></div>
+      </div>
+      <div class="subject-card">
+        <span class="card-icon">🔭</span>
+        <div class="card-title">Research Guidance</div>
+        <div class="card-desc">Expert mentoring for research scholars — topic selection, hypothesis framing, data analysis, and publication pathway support.</div>
+        <div class="card-topics"><span class="topic-tag">Topic Selection</span><span class="topic-tag">Data Analysis</span><span class="topic-tag">Publication</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <p class="section-tag reveal">The Process</p>
+  <h2 class="section-title reveal">How It Works</h2>
+  <p class="section-desc reveal">Simple steps from enrollment to mastering every concept.</p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <span class="step-num">01</span>
+      <div class="step-title">Reach Out</div>
+      <div class="step-desc">Contact us via the form or WhatsApp to discuss your subjects, level, and goals.</div>
+    </div>
+    <div class="step reveal">
+      <span class="step-num">02</span>
+      <div class="step-title">Choose Your Format</div>
+      <div class="step-desc">Pick personalized 1:1 tuition or join an upcoming online batch that fits your schedule.</div>
+    </div>
+    <div class="step reveal">
+      <span class="step-num">03</span>
+      <div class="step-title">Start Learning</div>
+      <div class="step-desc">Begin sessions with structured concept building — from basics all the way to advanced applications.</div>
+    </div>
+    <div class="step reveal">
+      <span class="step-num">04</span>
+      <div class="step-title">Master the Process</div>
+      <div class="step-desc">Solve problems confidently, clear exams, and understand the engineering behind every process.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+
+  <!-- INTRO BANNER -->
+  <div class="about-inner" style="margin-bottom:4rem;">
+    <div class="about-text reveal">
+      <p class="section-tag">Meet Your Mentor</p>
+      <h2 class="section-title">Dr. Meenakshi<br>Malhotra</h2>
+      <p style="color:var(--cream); font-size:1rem; font-weight:500; margin-bottom:1rem; letter-spacing:0.02em;">Ph.D. Chemical Engineering &nbsp;·&nbsp; NIT Durgapur &nbsp;·&nbsp; GATE Qualified</p>
+      <p style="color:var(--muted); line-height:1.85; margin-bottom:1.2rem;">
+        With over <strong style="color:var(--white)">15+ years of combined industry, research and academic experience</strong>, Dr. Meenakshi Malhotra brings rare depth to every lesson — from process plant floors at Reliance Industries to the research labs of NIT Durgapur and lecture halls of Chandigarh University.
+      </p>
+      <p style="color:var(--muted); line-height:1.85; margin-bottom:1.2rem;">
+        She has taught chemical engineering students at <strong style="color:var(--white)">B.Tech and M.Tech level</strong>, supervised academic projects, and established a Mass Transfer laboratory from scratch. Her international online tutoring experience spans students across the globe, making complex ChE concepts accessible regardless of where you learn from.
+      </p>
+      <p style="color:var(--muted); line-height:1.85;">
+        A GATE-qualified engineer herself (GATE 2007 &amp; GATE 2011), she understands exactly what it takes to crack competitive exams — and guides students accordingly.
+      </p>
+    </div>
+    <div class="about-visual reveal">
+      <div class="about-card">
+        <div class="about-formula">
+          Q̇ = UA·ΔTlm<br>
+          N_A = -D_AB·(dC_A/dz)<br>
+          dU = δQ - δW<br>
+          Re = ρuD / μ
+        </div>
+        <div class="about-quote">"Understanding the process is the beginning of mastering it."</div>
+        <div class="float-badge">Ph.D. ChE · NIT Durgapur</div>
+      </div>
+
+      <!-- Quick credential pills -->
+      <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:1.5rem;">
+        <span style="background:rgba(0,180,166,0.1);border:1px solid rgba(0,180,166,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--teal);font-family:'DM Mono',monospace;">🎓 Ph.D. NIT Durgapur</span>
+        <span style="background:rgba(0,180,166,0.1);border:1px solid rgba(0,180,166,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--teal);font-family:'DM Mono',monospace;">📘 M.E. Panjab University</span>
+        <span style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--amber);font-family:'DM Mono',monospace;">🏭 Reliance Industries</span>
+        <span style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--amber);font-family:'DM Mono',monospace;">🔬 Senior Research Fellow</span>
+        <span style="background:rgba(0,180,166,0.1);border:1px solid rgba(0,180,166,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--teal);font-family:'DM Mono',monospace;">✅ GATE Qualified</span>
+        <span style="background:rgba(0,180,166,0.1);border:1px solid rgba(0,180,166,0.25);border-radius:100px;padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--teal);font-family:'DM Mono',monospace;">🌍 International Online Tutor</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE TIMELINE -->
+  <div class="reveal" style="margin-bottom:4rem;">
+    <p class="section-tag" style="margin-bottom:1rem;">Professional Journey</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;margin-bottom:2rem;">Experience &amp; Credentials</h3>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem;">
+
+      <div class="subject-card" style="border-left:3px solid var(--teal);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;">
+          <span class="card-icon" style="font-size:1.8rem;">🔬</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">2017 – 2022</span>
+        </div>
+        <div class="card-title">Senior Research Fellow</div>
+        <div style="font-size:0.82rem;color:var(--teal);margin-bottom:0.6rem;">NIT Durgapur, West Bengal</div>
+        <div class="card-desc">Membrane &amp; Environmental Technology Laboratory, Dept. of Chemical Engineering. Supervised B.Tech &amp; M.Tech projects. Developed membrane-based water treatment technologies.</div>
+      </div>
+
+      <div class="subject-card" style="border-left:3px solid var(--teal);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;">
+          <span class="card-icon" style="font-size:1.8rem;">🎓</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">2015</span>
+        </div>
+        <div class="card-title">Assistant Professor</div>
+        <div style="font-size:0.82rem;color:var(--teal);margin-bottom:0.6rem;">Chandigarh University, Punjab</div>
+        <div class="card-desc">Taught B.Tech 2nd &amp; 3rd year students. Specialization: Mass Transfer, Heat Transfer &amp; Process Dynamic Control. Established new Mass Transfer Laboratory from scratch.</div>
+      </div>
+
+      <div class="subject-card" style="border-left:3px solid var(--amber);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;">
+          <span class="card-icon" style="font-size:1.8rem;">🏭</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">2008 – 2011</span>
+        </div>
+        <div class="card-title">Process Manager</div>
+        <div style="font-size:0.82rem;color:var(--amber);margin-bottom:0.6rem;">Reliance Industries Ltd., Vadodara</div>
+        <div class="card-desc">PSM, IMS, Energy &amp; Environment Coordinator for Ethylene Glycol Plant. Process engineer in Acrylonitrile Plant. Heat exchanger design using HTRI. Six Sigma project lead.</div>
+        <div class="card-topics">
+          <span class="topic-tag">Process Optimization</span>
+          <span class="topic-tag">HTRI Design</span>
+          <span class="topic-tag">Six Sigma</span>
+          <span class="topic-tag">YOKOGAWA DCS</span>
+        </div>
+      </div>
+
+      <div class="subject-card" style="border-left:3px solid var(--teal);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;">
+          <span class="card-icon" style="font-size:1.8rem;">🌍</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;">Present</span>
+        </div>
+        <div class="card-title">International Online Tutor</div>
+        <div style="font-size:0.82rem;color:var(--teal);margin-bottom:0.6rem;">Chemical Engineering — Global Students</div>
+        <div class="card-desc">Teaching chemical engineering concepts to international students online — covering Mass Transfer, Heat Transfer, Thermodynamics, and Material Science across time zones.</div>
+        <div class="card-topics">
+          <span class="topic-tag">Global Students</span>
+          <span class="topic-tag">Online Platform</span>
+          <span class="topic-tag">ChE Core</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PUBLICATIONS -->
+  <div class="reveal" style="margin-bottom:4rem;">
+    <p class="section-tag" style="margin-bottom:1rem;">Research Output</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;margin-bottom:0.5rem;">Published Research</h3>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:2rem;">Peer-reviewed journal publications in environmental &amp; membrane engineering</p>
+
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;">
+        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+        <div>
+          <div style="font-size:0.88rem;color:var(--white);line-height:1.6;margin-bottom:0.4rem;">A membrane-based green and low-cost system for ensuring safe drinking water in a selenium-affected region</div>
+          <div style="font-size:0.78rem;color:var(--teal);font-family:'DM Mono',monospace;">Journal of Environmental Management · 2022</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;">
+        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+        <div>
+          <div style="font-size:0.88rem;color:var(--white);line-height:1.6;margin-bottom:0.4rem;">A response surface optimized nanofiltration-based system for efficient removal of selenium from drinking water</div>
+          <div style="font-size:0.78rem;color:var(--teal);font-family:'DM Mono',monospace;">Journal of Water Process Engineering · 2020</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;">
+        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+        <div>
+          <div style="font-size:0.88rem;color:var(--white);line-height:1.6;margin-bottom:0.4rem;">Recycling of wastewater from tannery industry through membrane-integrated hybrid treatment using graphene oxide nanocomposite</div>
+          <div style="font-size:0.78rem;color:var(--teal);font-family:'DM Mono',monospace;">Journal of Water Process Engineering · 2020</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;">
+        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+        <div>
+          <div style="font-size:0.88rem;color:var(--white);line-height:1.6;margin-bottom:0.4rem;">A Single Functionalized Graphene Nanocomposite in Cross-flow Module for Removal of Multiple Toxic Anionic Contaminants from Drinking Water</div>
+          <div style="font-size:0.78rem;color:var(--teal);font-family:'DM Mono',monospace;">Environmental Science and Pollution Research · 2023</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;">
+        <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+        <div>
+          <div style="font-size:0.88rem;color:var(--white);line-height:1.6;margin-bottom:0.4rem;">Emerging technologies for Selenium Separation and Recovery from aqueous systems: A Review for Sustainable Management Strategy</div>
+          <div style="font-size:0.78rem;color:var(--teal);font-family:'DM Mono',monospace;">Canadian Journal of Chemical Engineering</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS & ACHIEVEMENTS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;">
+    <div class="reveal">
+      <p class="section-tag" style="margin-bottom:1rem;">Technical Tools</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;">
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">MATLAB</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">AutoCAD</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">ASPEN Plus</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">HTRI</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">pHAST</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">ProDyne Simulator</span>
+        <span class="topic-tag" style="font-size:0.75rem;padding:0.35rem 0.8rem;">YOKOGAWA DCS</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="section-tag" style="margin-bottom:1rem;">Awards &amp; Recognition</p>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.87rem;color:var(--muted);">
+          <span style="color:var(--amber);">🏆</span> Best PSM Coordinator 2009–2010, RIL Vadodara
+        </div>
+        <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.87rem;color:var(--muted);">
+          <span style="color:var(--amber);">🏆</span> Best Proposed CASHe Project 2010–2011, RIL
+        </div>
+        <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.87rem;color:var(--muted);">
+          <span style="color:var(--amber);">🏆</span> Winner — Incident Investigation Crossword, RIL VMD
+        </div>
+        <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.87rem;color:var(--muted);">
+          <span style="color:var(--teal);">✅</span> GATE Qualified — 2007 (Score 298) &amp; 2011 (Score 322)
+        </div>
+        <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.87rem;color:var(--muted);">
+          <span style="color:var(--teal);">✅</span> Member, Indian Society for Technical Education (ISTE)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-tag reveal">Get In Touch</p>
+  <h2 class="section-title reveal">Enroll or<br>Ask a Question</h2>
+
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <p>Ready to start? Reach out to book your first session or ask about upcoming batch schedules. We'll get back to you quickly.</p>
+
+      <div class="contact-item">
+        <span class="ci-icon">📱</span>
+        <div>
+          <div class="ci-label">Primary / WhatsApp</div>
+          <div class="ci-value">+91 82508 70857</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <span class="ci-icon">📞</span>
+        <div>
+          <div class="ci-label">Alternate Number</div>
+          <div class="ci-value">+91 94347 76438</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <span class="ci-icon">📧</span>
+        <div>
+          <div class="ci-label">Email</div>
+          <div class="ci-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="37474558515a525259565c445f5e030377505a565e5b1954585a">[email&#160;protected]</a></div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <span class="ci-icon">🎓</span>
+        <div>
+          <div class="ci-label">For Students</div>
+          <div class="ci-value">B.Tech / B.E. Chemical Engineering</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <span class="ci-icon">🖥️</span>
+        <div>
+          <div class="ci-label">Mode</div>
+          <div class="ci-value">Online (Google Meet / Zoom)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT ENQUIRY FORM -->
+    <div class="reveal">
+      <div style="background:rgba(0,180,166,0.06);border:1px solid rgba(0,180,166,0.2);border-radius:16px;padding:2.5rem;">
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.4rem;">
+          <span style="font-size:1.5rem;">📋</span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;">Student Enquiry Form</h3>
+        </div>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:2rem;">Fill in your details and we'll get back to you within 24 hours.</p>
+
+        <form class="contact-form" onsubmit="handleSubmit(event)" style="gap:1.2rem;">
+
+          <div class="form-group">
+            <label>Full Name <span style="color:var(--teal);">*</span></label>
+            <input type="text" placeholder="Your full name" required style="font-size:1rem;padding:0.9rem 1.1rem;">
+          </div>
+
+          <div class="form-group">
+            <label>Mobile Number <span style="color:var(--teal);">*</span></label>
+            <input type="tel" placeholder="+91 98765 43210" required style="font-size:1rem;padding:0.9rem 1.1rem;">
+          </div>
+
+          <div class="form-group">
+            <label>Email Address <span style="color:var(--teal);">*</span></label>
+            <input type="email" placeholder="you@example.com" required style="font-size:1rem;padding:0.9rem 1.1rem;">
+          </div>
+
+          <div class="form-group">
+            <label>Subject of Interest</label>
+            <select style="font-size:1rem;padding:0.9rem 1.1rem;">
+              <option value="">Select a subject…</option>
+              <option>Mass Transfer</option>
+              <option>Engineering Thermodynamics</option>
+              <option>Material Science</option>
+              <option>Heat Transfer</option>
+              <option>Chemistry / STEM</option>
+              <option>GATE Preparation</option>
+              <option>Thesis / Research Guidance</option>
+              <option>Academic Writing</option>
+              <option>Multiple Subjects</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Preferred Plan</label>
+            <select style="font-size:1rem;padding:0.9rem 1.1rem;">
+              <option value="">Select a plan…</option>
+              <option>Personalized 1-on-1 (₹2500/hr)</option>
+              <option>Online Batch (₹1500/hr)</option>
+              <option>Research / Thesis Service</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Message <span style="color:var(--muted);font-size:0.75rem;">(optional)</span></label>
+            <textarea placeholder="Tell us your current year, university, or any specific topics you need help with…" style="font-size:0.95rem;padding:0.9rem 1.1rem;"></textarea>
+          </div>
+
+          <button type="submit" class="form-submit" style="font-size:1rem;padding:1.1rem;border-radius:8px;margin-top:0.3rem;">
+            Submit Enquiry →
+          </button>
+
+          <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem;">
+            We respect your privacy. Your details will only be used to contact you about your enquiry.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Process Classroom</div>
+  <div class="foot-copy">© 2024 The Process Classroom. All rights reserved.</div>
+  <div class="foot-links">
+    <a href="#subjects">Subjects</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger sibling reveals
+  document.querySelectorAll('.subjects-grid, .pricing-grid, .steps').forEach(grid => {
+    [...grid.children].forEach((child, i)
